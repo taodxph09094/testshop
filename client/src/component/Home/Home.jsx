@@ -2,9 +2,11 @@ import React, { Fragment, useEffect } from "react";
 import { CgMouse } from "react-icons/all";
 import "./Home.css";
 import { useSelector, useDispatch } from "react-redux";
-import { useAlert } from "react-alert";
+// import { useAlert } from "react-alert";
 import ProductCard from "./ProductCard";
 import MetaData from './../layouts/MetaData';
+import { getProduct } from "../../actions/productAction";
+
 
 const product = {
     name: "macbook",
@@ -14,6 +16,13 @@ const product = {
 }
 
 const Home = () => {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+
+    dispatch(getProduct());
+  }, [dispatch]);
+
     return (
         <Fragment>
             <MetaData title="Dang test" />
