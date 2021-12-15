@@ -2,30 +2,32 @@ import React, { Fragment, useEffect } from "react";
 import { CgMouse } from "react-icons/all";
 import "./Home.css";
 import { useSelector, useDispatch } from "react-redux";
-// import { useAlert } from "react-alert";
+import { useAlert } from "react-alert";
 import ProductCard from "./ProductCard";
 import MetaData from './../layouts/MetaData';
-import { getProduct } from "../../actions/productAction";
-
-
-const product = {
-    name: "macbook",
-    images: [{ url: "https://media.congluan.vn/files/huyhoang/2020/12/19/macbook-air-m1-bi-khoi-dong-lai-1-1527.jpg"}],
-    price: "$3200",
-    _id:"taodx"
-}
+import { clearErrors , getProduct } from "../../actions/productAction";
+import Loader from './../layouts/Loader/Loader';
 
 const Home = () => {
   const dispatch = useDispatch();
-
+  const alert = useAlert();
+  const {loading, error, products} = useSelector(state => state.products);
   useEffect(() => {
-
+    if (error) {
+      alert.error(error);
+      dispatch(clearErrors());
+    }
     dispatch(getProduct());
-  }, [dispatch]);
+  }, [dispatch, error, alert]);
 
     return (
+      <Fragment>
+      {loading ? (
+        <Loader />
+      ) : (
         <Fragment>
-            <MetaData title="Dang test" />
+          <MetaData title="tao test" />
+
           <div className="banner">
             <p>Welcome to Ecommerce</p>
             <h1>FIND AMAZING PRODUCTS BELOW</h1>
@@ -40,8 +42,13 @@ const Home = () => {
           <h2 className="homeHeading">Featured Products</h2>
 
           <div className="container" id="container">
-          <ProductCard product={product} />
+            {products &&
+              products.map((product) => (
+                <ProductCard key={product._id} product={product} />
+              ))}
           </div>
+        </Fragment>
+      )}
     </Fragment>
     )
 }
