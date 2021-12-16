@@ -11,20 +11,34 @@ import ProductDetails from './component/Product/ProductDetails';
 import Products from './component/Product/Products';
 import Search from './component/Product/Search';
 import Login from './component/User/Login';
-
-
+import store from "./store";
+import { loadUser } from './actions/userAction';
+import UserOptions from './component/layouts/Header/UserOptions';
+import { useSelector } from 'react-redux';
+import Profile from './component/User/Profile';
+import UpdateProfile from './component/User/UpdateProfile';
+import ProtectedRoute from "./component/Route/ProtectedRoute";
+import UpdatePassword from './component/User/UpdatePassword';
+import ForgotPassword from './component/User/ForgotPassword';
+import ResetPassword from './component/User/ResetPassword';
+import Cart from './component/Cart/Cart';
 
 function App() {
+
+  const { isAuthenticated, user } = useSelector((state) => state.user);
+
   React.useEffect(() => {
     WebFont.load({
       google: {
         families: ["Roboto", "Droid Sans", "Chilanka"],
       },
     });
+    store.dispatch(loadUser());
   }, []);
   return (
     <Router>
       <Header />
+      {isAuthenticated && <UserOptions user={user} />}
       <Switch>
         <Route exact path="/" component={Home} />
         <Route exact path="/product/:id" component={ProductDetails} />
@@ -33,7 +47,13 @@ function App() {
         <Route exact path="/contact" component={Contact} />
          <Route exact path="/about" component={About} />
          <Route exact path="/search" component={Search} />
+         <ProtectedRoute exact path="/account" component={Profile} />
+         <ProtectedRoute exact path="/me/update" component={UpdateProfile} />
+         <ProtectedRoute exact path="/password/update" component={UpdatePassword} />
+         <Route exact path="/password/forgot" component={ForgotPassword} />
+         <Route exact path="/password/reset/:token" component={ResetPassword} />
          <Route exact path="/login" component={Login} />
+         <Route exact path="/cart" component={Cart} />
         </Switch>
       <Footer />
     </Router>
